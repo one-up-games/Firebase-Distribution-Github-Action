@@ -33,6 +33,11 @@ inputs:
     description: 'Flag that can included to print verbose log output.'
     required: false
     default: false
+outputs:
+  share_url:
+    description: 'Share url'
+  release_url:
+    description: 'Release url'    
 branding:
   color: 'orange'
   icon: 'send'

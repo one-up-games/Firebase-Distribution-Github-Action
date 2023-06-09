@@ -33,7 +33,7 @@ if [ -n "${INPUT_TOKEN}" ] ; then
     export FIREBASE_TOKEN="${INPUT_TOKEN}"
 fi
 
-firebase \
+output=$(firebase \
         appdistribution:distribute \
         "$INPUT_FILE" \
         --app "$INPUT_APPID" \
@@ -41,12 +41,20 @@ firebase \
         --testers "$INPUT_TESTERS" \
         ${RELEASE_NOTES:+ --release-notes "${RELEASE_NOTES}"} \
         ${INPUT_RELEASENOTESFILE:+ --release-notes-file "${RELEASE_NOTES_FILE}"} \
-        $( (( $INPUT_DEBUG )) && printf %s '--debug' )
+        $( (( $INPUT_DEBUG )) && printf %s '--debug'))
 
 status=$?
+
+echo $output
 
 if [ -n "${INPUT_TOKEN}" ] ; then
     echo ${TOKEN_DEPRECATED_WARNING_MESSAGE}
 fi
+
+release_url=$(echo $output | grep -Eo "(http|https)://[a-zA-Z0-9./?=_%:-]*" | sed -n 1p )
+share_url=$(echo $output | grep -Eo "(http|https)://[a-zA-Z0-9./?=_%:-]*" | sed -n 2p )
+
+echo "share_url=$share_url" >> $GITHUB_OUTPUT
+echo "release_url=$release_url" >> $GITHUB_OUTPUT
 
 exit $status
