@@ -34,10 +34,12 @@ inputs:
     required: false
     default: false
 outputs:
-  share_url:
-    description: 'Share url'
-  release_url:
-    description: 'Release url'    
+  console_uri:
+    description: 'Console url'
+  testing_uri:
+    description: 'Testing url'
+  binart_download_uri:
+    description: 'Binary download url'
 branding:
   color: 'orange'
   icon: 'send'

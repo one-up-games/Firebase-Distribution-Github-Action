@@ -51,10 +51,16 @@ if [ -n "${INPUT_TOKEN}" ] ; then
     echo ${TOKEN_DEPRECATED_WARNING_MESSAGE}
 fi
 
-release_url=$(echo $output | grep -Eo "(http|https)://[a-zA-Z0-9./?=_%:-]*" | sed -n 1p )
-share_url=$(echo $output | grep -Eo "(http|https)://[a-zA-Z0-9./?=_%:-]*" | sed -n 2p )
 
-echo "share_url=$share_url" >> $GITHUB_OUTPUT
-echo "release_url=$release_url" >> $GITHUB_OUTPUT
+if [[ $line == *"View this release in the Firebase console"* ]]; then
+CONSOLE_URI=$(echo "$line" | sed -e 's/.*: //' -e 's/^ *//;s/ *$//')
+echo "console_uri=$CONSOLE_URI" >>"$GITHUB_OUTPUT"
+elif [[ $line == *"Share this release with testers who have access"* ]]; then
+TESTING_URI=$(echo "$line" | sed -e 's/.*: //' -e 's/^ *//;s/ *$//')
+echo "testing_uri=$TESTING_URI" >>"$GITHUB_OUTPUT"
+elif [[ $line == *"Download the release binary"* ]]; then
+BINARY_URI=$(echo "$line" | sed -e 's/.*: //' -e 's/^ *//;s/ *$//')
+echo "binart_download_uri=$BINARY_URI" >>"$GITHUB_OUTPUT"
+fi
 
 exit $status
