@@ -46,6 +46,8 @@ firebase \
     while read -r line; do
         echo $line    
 
+        echo -n $line | base64
+
         if [[ $line == *"View this release in the Firebase console"* ]]; then
         CONSOLE_URI=$(echo "$line" | sed -e 's/.*: //' -e 's/^ *//;s/ *$//')
         echo "console_uri=$CONSOLE_URI" >>$GITHUB_OUTPUT
