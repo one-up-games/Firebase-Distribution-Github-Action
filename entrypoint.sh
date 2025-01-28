@@ -33,7 +33,7 @@ if [ -n "${INPUT_TOKEN}" ] ; then
     export FIREBASE_TOKEN="${INPUT_TOKEN}"
 fi
 
-output=$(firebase \
+firebase \
         appdistribution:distribute \
         "$INPUT_FILE" \
         --app "$INPUT_APPID" \
@@ -41,26 +41,20 @@ output=$(firebase \
         --testers "$INPUT_TESTERS" \
         ${RELEASE_NOTES:+ --release-notes "${RELEASE_NOTES}"} \
         ${INPUT_RELEASENOTESFILE:+ --release-notes-file "${RELEASE_NOTES_FILE}"} \
-        $( (( $INPUT_DEBUG )) && printf %s '--debug'))
+        $( (( $INPUT_DEBUG )) && printf %s '--debug') |
+{
+    while read -r line; do
+        echo $line    
 
-status=$?
-
-echo $output
-
-if [ -n "${INPUT_TOKEN}" ] ; then
-    echo ${TOKEN_DEPRECATED_WARNING_MESSAGE}
-fi
-
-
-if [[ $line == *"View this release in the Firebase console"* ]]; then
-CONSOLE_URI=$(echo "$line" | sed -e 's/.*: //' -e 's/^ *//;s/ *$//')
-echo "console_uri=$CONSOLE_URI" >>$GITHUB_OUTPUT
-elif [[ $line == *"Share this release with testers who have access"* ]]; then
-TESTING_URI=$(echo "$line" | sed -e 's/.*: //' -e 's/^ *//;s/ *$//')
-echo "testing_uri=$TESTING_URI" >>$GITHUB_OUTPUT
-elif [[ $line == *"Download the release binary"* ]]; then
-BINARY_URI=$(echo "$line" | sed -e 's/.*: //' -e 's/^ *//;s/ *$//')
-echo "binart_download_uri=$BINARY_URI" >>$GITHUB_OUTPUT
-fi
-
-exit $status
+        if [[ $line == *"View this release in the Firebase console"* ]]; then
+        CONSOLE_URI=$(echo "$line" | sed -e 's/.*: //' -e 's/^ *//;s/ *$//')
+        echo "console_uri=$CONSOLE_URI" >>$GITHUB_OUTPUT
+        elif [[ $line == *"Share this release with testers who have access"* ]]; then
+        TESTING_URI=$(echo "$line" | sed -e 's/.*: //' -e 's/^ *//;s/ *$//')
+        echo "testing_uri=$TESTING_URI" >>$GITHUB_OUTPUT
+        elif [[ $line == *"Download the release binary"* ]]; then
+        BINARY_URI=$(echo "$line" | sed -e 's/.*: //' -e 's/^ *//;s/ *$//')
+        echo "binary_download_uri=$BINARY_URI" >>$GITHUB_OUTPUT
+        fi
+    done
+}
