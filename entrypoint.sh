@@ -57,6 +57,4 @@ firebase \
         echo "binary_download_uri=$BINARY_URI" >>$GITHUB_OUTPUT
         fi
     done
-
-    echo $TESTING_URI >> file.txt
 }
