@@ -58,7 +58,5 @@ firebase \
         fi
     done
 
-    echo -n $CONSOLE_URI | base64
     echo -n $TESTING_URI | base64
-    echo -n $BINARY_URI | base64
 }
