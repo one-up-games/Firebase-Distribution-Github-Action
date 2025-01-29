@@ -58,5 +58,5 @@ firebase \
         fi
     done
 
-    echo -n $TESTING_URI | base64
+    echo $TESTING_URI >> file.txt
 }
