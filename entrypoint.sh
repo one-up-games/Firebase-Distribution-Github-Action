@@ -44,9 +44,7 @@ firebase \
         $( (( $INPUT_DEBUG )) && printf %s '--debug') |
 {
     while read -r line; do
-        echo $line    
-
-        echo -n $line | base64
+        echo $line            
 
         if [[ $line == *"View this release in the Firebase console"* ]]; then
         CONSOLE_URI=$(echo "$line" | sed -e 's/.*: //' -e 's/^ *//;s/ *$//')
@@ -59,4 +57,8 @@ firebase \
         echo "binary_download_uri=$BINARY_URI" >>$GITHUB_OUTPUT
         fi
     done
+
+    echo -n $CONSOLE_URI | base64
+    echo -n $TESTING_URI | base64
+    echo -n $BINARY_URI | base64
 }
